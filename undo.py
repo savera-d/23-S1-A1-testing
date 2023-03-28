@@ -13,6 +13,7 @@ class UndoTracker:
         
 
     def add_action(self, action: PaintAction) -> None:
+        #comment
         """
         Adds an action to the undo tracker.
 
