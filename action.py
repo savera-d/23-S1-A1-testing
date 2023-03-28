@@ -19,7 +19,7 @@ class PaintStep:
         sq.erase(self.affected_layer)
 
     def redo_apply(self, grid: Grid):
-        sq = grid[self.affected_grid_square[0]][self.affected_grid_square[1]]
+        sq = grid[0][1]
         sq.add(self.affected_layer)
 
 

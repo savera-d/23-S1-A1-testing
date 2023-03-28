@@ -5,7 +5,7 @@ from layer_util import Layer
 from grid import * # this should import everything
 from data_structures.queue_adt import CircularQueue
 from data_structures.array_sorted_list import ArraySortedList
-
+from data_structures.sorted_list_adt import ListItem
 class LayerStore(ABC):
 
     def __init__(self) -> None:
@@ -137,45 +137,44 @@ class SequenceLayerStore(LayerStore):
     """
 
     def __init__(self):
-        self.array_sorted_list = ArraySortedList(20)
+        self.array_sorted_list = ArraySortedList(1000)
 
     def add(self,layer: Layer):
-        #key = layer.name 
-        key = layer.index
-        position = self.array_sorted_list._index_to_add([layer,key])
-        #self.array_sorted_list.add([layer,key])
-        self.array_sorted_list[position] = [layer, key]
-
+        self.array_sorted_list.add(ListItem(layer, layer.index))
         
     def erase(self,layer: Layer):
-        if len(self.array_sorted_list) == 0:
-            return ValueError("no")
-        #index = self.array_sorted_list.index([layer, layer.index])
-        self.array_sorted_list.delete_at_index(layer.index)
-    
+        index = self.array_sorted_list.index(ListItem(layer,layer.index))
+        self.array_sorted_list.delete_at_index(index)
+
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
         """
         if len(self.array_sorted_list) == 0:
             return start
-        else:
-            smallest_item = self.array_sorted_list[0]
-            self.current_colour = smallest_item.apply(start, timestamp, x, y)
-            return self.current_colour
-        #index the smallest item from the array sorted list and then get the colour by using .apply 
-        #   def __getitem__(self, index: int) -> T:
-        """ Magic method. Return the element at a given position. """
-         #return self.array[index]
+        
+        for layer in self.array_sorted_list:
+            if layer != None:
+                layer = layer.value
+      
+                colour = layer.apply(start, timestamp, x, y)
+                start = colour
+                
+
+        
+        return colour
+           
+  
+
     
     
     def special(self):
-        if len(list)%2 != 0:
+        if len(self.array_sorted_list)%2 != 0:
                 median_pos = len(list)/2 -1 # in order to change it from the position to an index value we minus 1
                 median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.
                 list.delete_at_index(median_pos)
-        if len(list)%2 == 0:
+        if len(self.array_sorted_list)%2 == 0:
                 median_pos = len(list)/2 -1 # we minus 1 in order to change the position to an index
                 list.delete_at_index(median_pos)
-        return list
+        return self.array_sorted_list
 

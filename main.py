@@ -6,6 +6,7 @@ from layer_util import get_layers, Layer
 from layers import lighten
 from undo import UndoTracker
 from action import *
+from layer_store import *
 
 
 
@@ -311,17 +312,14 @@ class MyWindow(arcade.Window):
         py: y position of the brush.
         """
         # this implements our painting onto the grid
-        self.grid.colour(layer, self.draw_style, px,  py)
-        # we have to add for each and every manhattan square???
-        #we count this as a step
-        self.step = PaintStep([px,py], layer)
+        self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
+        
 
-        # create a pain action from this 
-        self.action = PaintAction()
-        self.action.add_step(self.step)
 
-        # add this to our tracker
-        self.tracker.add_action(self.action)
+
+
+
+
        
         
     def on_undo(self):
