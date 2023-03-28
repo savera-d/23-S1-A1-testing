@@ -4,6 +4,10 @@ import math
 from grid import Grid
 from layer_util import get_layers, Layer
 from layers import lighten
+from undo import UndoTracker
+from action import *
+
+
 
 class MyWindow(arcade.Window):
     """ Painter Window """
@@ -287,7 +291,11 @@ class MyWindow(arcade.Window):
 
     def on_init(self):
         """Initialisation that occurs after the system initialisation."""
-        pass
+        self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y)
+        self.tracker = UndoTracker()
+        self.action = None
+    
+
 
     def on_reset(self):
         """Called when a window reset is requested."""
@@ -302,12 +310,24 @@ class MyWindow(arcade.Window):
         px: x position of the brush.
         py: y position of the brush.
         """
-        pass
+        # this implements our painting onto the grid
+        self.grid.colour(layer, self.draw_style, px,  py)
+        # we have to add for each and every manhattan square???
+        #we count this as a step
+        self.step = PaintStep([px,py], layer)
 
+        # create a pain action from this 
+        self.action = PaintAction()
+        self.action.add_step(self.step)
+
+        # add this to our tracker
+        self.tracker.add_action(self.action)
+       
+        
     def on_undo(self):
         """Called when an undo is requested."""
         pass
-
+       
     def on_redo(self):
         """Called when a redo is requested."""
         pass
