@@ -181,11 +181,11 @@ class Grid:
         """
         return self.grid[item]
     
-    def __setitem__(self, item):
+    def __setitem__(self, item, index):
         """
 
         """
-        #TODO
+        self.grid[index] = item
 
 '''my_grid = Grid(Grid.DRAW_STYLE_SET, 3,3)
 print(my_grid[1][1])
