@@ -91,33 +91,33 @@ class Grid:
                 self.grid[x][y].add(layer)
             #If the layerstore and the draw style is not hte same we override the current layerstore
             else: 
-                if self.draw_style == "TO CHECK WHICH ONE":
+                if self.draw_style == "SEQUENCE":
                     self.grid[x][y] = SequenceLayerStore()# x will be the value and the y will be the key value
                     self.grid[x][y].add(layer) # this should use the method from the layer store to add the layer to the store
                     #current_position = my_grid[value.item][value.key] # this should save the sequance layer store into the current pos
                     #current_position.arraysortedlist[layer.index] = [layer, layer.name] #this should insert the layer and the name into the array sorted list of hte layer store
 
-                if self.draw_style == "TO CHECK WHICH ONE":
+                if self.draw_style == "SET":
                     self.grid[x][y] = SetLayerStore() # create a setlayerstore for this position
                     self.grid[x][y].add(layer) # this should simply use the add function to add the selected painted layer into the wanted grid positions
         
-                if self.draw_style == "TO CHECK WHICH ONE":
+                if self.draw_style == "ADD":
                     self.grid[x][y] = AdditiveLayerStore()
                     self.grid[x][y].add(layer)
 
         elif self.grid[x][y] == None:
-            if self.draw_style == "TO CHECK WHICH ONE":
+            if self.draw_style == "SEQUENCE":
                 self.grid[x][y] = SequenceLayerStore()# x will be the value and the y will be the key value
                 self.grid[x][y].add(layer) # this should use the method from the layer store to add the layer to the store
                 #current_position = my_grid[value.item][value.key] # this should save the sequance layer store into the current pos
                 #current_position.arraysortedlist[layer.index] = [layer, layer.name] #this should insert the layer and the name into the array sorted list of hte layer store
 
-            if self.draw_style == "TO CHECK WHICH ONE":
+            if self.draw_style == "SET":
                 self.grid[x][y] = SetLayerStore() # create a setlayerstore for this position
                 self.grid[x][y].add(layer) # this should simply use the add function to add the selected painted layer into the wanted grid positions
             
             
-            if self.draw_style == "TO CHECK WHICH ONE":
+            if self.draw_style == "ADD":
                 self.grid[x][y] = AdditiveLayerStore()
                 self.grid[x][y].add(layer)
 
@@ -179,7 +179,7 @@ class Grid:
         """
         To get the item
         """
-        return self[item]
+        return self.grid[item]
     
     def __setitem__(self, item):
         """
