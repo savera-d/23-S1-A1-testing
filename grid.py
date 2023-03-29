@@ -2,8 +2,10 @@ from __future__ import annotations
 from data_structures.stack_adt import ArrayStack
 from data_structures.queue_adt import CircularQueue
 from data_structures.referential_array import ArrayR
-from layer_store import *
 
+from layer_util import *
+from layers import *
+from layer_store import *
 
 class Grid:
     DRAW_STYLE_SET = "SET"
@@ -88,7 +90,7 @@ class Grid:
         """
         for i in range(self.x):#goes through all x values in grid
             for j in range(self.y): #for each x value, it selects each grid square by selecting the corresponding y value
-                LayerStore.special() #activates special to every grid square
+                LayerStore.special(self) #activates special to every grid square
 
 
     def grid_paint(self, layer: Layer, x, y, brush_size):

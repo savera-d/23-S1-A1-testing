@@ -7,6 +7,7 @@ from layers import lighten
 from undo import UndoTracker
 from action import *
 from layer_store import *
+from replay import ReplayTracker 
 
 
 class MyWindow(arcade.Window):
@@ -297,6 +298,8 @@ class MyWindow(arcade.Window):
         """
         self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
+        self.replay_tracker = ReplayTracker()
+        self.action = None
        
     
 
@@ -315,31 +318,37 @@ class MyWindow(arcade.Window):
         action= action object is created to store all the steps when painting.
         steps= which layer has been added and where this has been applied.
         """
-        action = PaintAction()
-        steps = PaintStep()
+        
         # this implements our painting onto the grid and creates variable coordinate list
         coordinate_list = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
+        templist = []
         
         #this is to add the steps to paint action so that we can add the action to the undo tracker
         for values in coordinate_list:
             values.x = values.value #assigning value to x coordinate
             values.y = values.key  #assigning key to y coordinate
-            steps.affected_grid_square = (values.x, values.y) #the coordinates to which the layer in grid was applied 
-            steps.affected_layer = layer #the layer applied to the x y coordinates
-            action.add_step(steps)  #appends the coordinates and they layer applied to the action object
-            self.tracker.add_action(action) #paintaction is pushed into undo stack 
+            affected_grid_square = tuple(values.x, values.y) #the coordinates to which the layer in grid was applied 
+            affected_layer = layer #the layer applied to the x y coordinates
+            steps = PaintStep(affected_grid_square, affected_layer)
+            templist.append(steps) # this is the list that we iinput into the paintaction.
+        
+        self.action = PaintAction(templist, False) # create the paint action object with all of the steps and whether it is a special or not. 
+        self.tracker.add_action(self.action) #paintaction is pushed into undo stack and is special is passed as False
+        #add the action to the replay tracker too now.
+        self.replay_tracker.add_action(self.action, False) #is undo is going to be false here.
         
     def on_undo(self):
         """Called when an undo is requested."""
-        pass
+        #self. action should be the last action that was done
+        self.replay_tracker.add_action(self.action, True)
        
     def on_redo(self):
         """Called when a redo is requested."""
-        pass
+        self.replay_tracker.add_action(self.action, False)
 
     def on_special(self):
         """Called when the special action is requested."""
-        pass
+        self.replay_tracker(self.action, False)
 
     def on_replay_start(self):
         """Called when the replay starting is requested."""

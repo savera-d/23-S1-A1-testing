@@ -9,7 +9,6 @@ from data_structures.sorted_list_adt import ListItem
 class LayerStore(ABC):
 
     def __init__(self) -> None:
-        
         self.current_layer = None
         self.current_colour= None
     @abstractmethod
@@ -108,16 +107,19 @@ class AdditiveLayerStore(LayerStore):
         self.our_queue = CircularQueue(1000) #creating the empty queue 
      
     def add(self,layer)-> bool:
-        if not self.our_queue.is_full:
-            self.our_queue.append(layer) #using the queue method append to add layers to our queue
-            return True
-        return False 
+        if self.our_queue.is_full():
+            return False
+        self.our_queue.append(layer)  #using the queue method append to add layers to our queue
+        return True
 
     def erase(self,layer)-> bool:
         if self.our_queue.is_empty():
             return False
         self.our_queue.serve() #using the queue method to remove layers from our queue
         return True 
+        
+        # self.our_queue.serve()
+        # return True
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]: 
         """
