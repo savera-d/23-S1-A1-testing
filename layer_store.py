@@ -50,31 +50,46 @@ class SetLayerStore(LayerStore):
     - special: Invert the colour output.
     """
 
-    def __init__(self):
+    def __init__(self): #initialising set layer store 
+        """
+        initialise the set layer store class
+        current layer = the current layer that is being applied on the grid 
+        is special = creates a toggle which changes if special is applied or not 
+        """
         self.current_layer = None
         self.is_special = False
 
-    def add(self,layer):
-        self.current_layer = layer
+    def add(self,layer): #implementing add in set layer store DO I NEED TO DO A DOCSTRING FOR THESE FUNCTIONS?
+        self.current_layer = layer #the current layer will be replaced by the new chosen layer
         
-    def erase(self,layer):
-        self.current_layer = None
+    def erase(self,layer): #implementing erase in set layer store
+        self.current_layer = None #the current layer will be removed 
     
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
-        if self.current_layer == None:
-            return start   
+        """
+        Returns the colour this square should show, given the current layers.
+        start= start colour tuple (r,g,b)
+        timestamp= integer value 
+        x= x coordinate (int)
+        y= y coordinate (int)
+        """
+        if self.current_layer == None: #if there is no current layer applied
+            return start   #return the starting tuple as no effects have been added
         
-        elif self.is_special:
+        elif self.is_special: #if special effect is applied 
             i=0
-            self.current_colour = self.current_layer.apply(start, timestamp,x,y)
-            newtuple = tuple([255 - colours for colours in self.current_colour])
-            return newtuple
-        elif not self.is_special:
-            return self.current_layer.apply(start, timestamp, x , y)
+            self.current_colour = self.current_layer.apply(start, timestamp,x,y) #get the currrent colour tuple without special being applied
+            newtuple = tuple([255 - colours for colours in self.current_colour]) #special is applied by subtracting the current tuples from 255
+            return newtuple #returns the special tuple with special applied to it 
+        elif not self.is_special: #if special is not applied 
+            return self.current_layer.apply(start, timestamp, x , y) #return the current colour tuple from the layer that is applied 
 
-    def special(self):
-        self.is_special = not self.is_special
+    def special(self): 
+        """
+        When special is applied SetLayerStore keeps the current layer, but always applies an inversion (255 minues the colour) of the colours after the layer has been applied
+        """
+        self.is_special = not self.is_special #acts as a toggle to switch self.special between true and false
 
 class AdditiveLayerStore(LayerStore):
     """
@@ -85,45 +100,54 @@ class AdditiveLayerStore(LayerStore):
     """
 
     def __init__(self):
-        self.our_queue = CircularQueue(1000)
+        """
+        initialising the additive layer store class 
+        our queue- creating an empty queue to add layers to, its operations are applied first in first out 
+        """
+        self.our_queue = CircularQueue(1000) #creating the empty queue 
     
     def add(self,layer):
-        self.our_queue.append(layer)
+        self.our_queue.append(layer) #using the queue method append to add layers to our queue
 
     def erase(self,layer):
-        self.our_queue.serve()
+        self.our_queue.serve() #using the queue method to remove layers from our queue
     
-    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]: 
         """
         Returns the colour this square should show, given the current layers.
+        start= start colour tuple (r,g,b)
+        timestamp= integer value 
+        x= x coordinate (int)
+        y= y coordinate (int)
         """
-        if self.our_queue.is_empty():
-            return start
+        if self.our_queue.is_empty(): #if there are no layers in our queue
+            return start #return the start tuple 
         else:
-            new_queue = CircularQueue(1000)
-            while not self.our_queue.is_empty():
-                oldest_layer = self.our_queue.serve()
-                new_queue.append(oldest_layer)
-                oldest_colour = oldest_layer.apply(start, timestamp, x, y)
-                oldest_layer = None
+            new_queue = CircularQueue(1000) #creating an empty circular queue
+            while not self.our_queue.is_empty(): #while our queue has layers in it
+                oldest_layer = self.our_queue.serve() #remove the oldest layer that was added to the queue
+                new_queue.append(oldest_layer) # add this oldest layer into our new circular queue
+                oldest_colour = oldest_layer.apply(start, timestamp, x, y) #using apply to get the oldest colour as a tuple from the oldest layer
+                oldest_layer = None #oldest layer is updated to none so that it doesnt become more than one layer for the purpose of accessing the oldest colour only
                 start = oldest_colour
 
             self.our_queue = new_queue
-            
             return oldest_colour
         
-
     def special(self):
-        temp_stack = ArrayStack(1000)
-        new_queue = CircularQueue(1000)
-        for i in range (len(self.our_queue)):
-            self.current_colour = self.our_queue.serve()
-            temp_stack.push(self.current_colour) # this saves the values of the queue to the stack to be put back into the queue
-        for i in range(len(temp_stack)):
-            current_item = temp_stack.pop()
-            new_queue.append(current_item)
+        """
+        When special is applied additive layer reverses the "ages" of each layer, so the oldest layer is now the youngest layer, etc
+        """
+        temp_stack = ArrayStack(1000) #creating an empty array stack 
+        new_queue = CircularQueue(1000) #creating a new circular queue
+        for i in range (len(self.our_queue)): #going through the layers in our queue 
+            self.current_layer = self.our_queue.serve() #removing each layer from our queue one by one in a first in first out order
+            temp_stack.push(self.current_layer) # pushing each layer into a temporary stack 
+        for i in range(len(temp_stack)): #going through each layer pushed into the temporary stack
+            current_item = temp_stack.pop() #popping/removing each layer in a last in first out orderr
+            new_queue.append(current_item) #as the layers are popped off the temp stack they are added into our new queue. this will be in reversed age order of layers
             
-        self.our_queue = new_queue
+        self.our_queue = new_queue # updating the self variable so it can be used everywhere else as the updated queue
 
 
 class SequenceLayerStore(LayerStore):
@@ -137,14 +161,18 @@ class SequenceLayerStore(LayerStore):
     """
 
     def __init__(self):
+        """
+        initialises the Sequence layer store class
+        array sorted list = storing our layers in an array sorted list 
+        """
         self.array_sorted_list = ArraySortedList(1000)
 
     def add(self,layer: Layer):
-        self.array_sorted_list.add(ListItem(layer, layer.index))
+        self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
         
     def erase(self,layer: Layer):
-        index = self.array_sorted_list.index(ListItem(layer,layer.index))
-        self.array_sorted_list.delete_at_index(index)
+        index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
+        self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -159,16 +187,17 @@ class SequenceLayerStore(LayerStore):
       
                 colour = layer.apply(start, timestamp, x, y)
                 start = colour
-                
-
         
         return colour
-           
-  
-
     
     
-    def special(self):
+    def special(self): 
+        """
+        special for sequential layer store removes the median "applying" layer based on its name, lexicographically ordered.
+        - in the case of an even number of layers we select the lexicographically smaller ordered name
+        median pos = 
+        array sorted list = 
+        """
         if len(self.array_sorted_list)%2 != 0:
                 median_pos = len(list)/2 -1 # in order to change it from the position to an index value we minus 1
                 median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.

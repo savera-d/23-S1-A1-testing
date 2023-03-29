@@ -7,9 +7,11 @@ class UndoTracker:
     def __init__(self) -> None: 
         """
         inititalising where actions are stored for undo and redo by creating stacks
+        redo stack = 
+        undo stack = 
         """
-        self.redo_stack = ArrayStack(10000)#arraystack for redo
-        self.undo_stack = ArrayStack(10000)#arraystack for undo
+        self.redo_stack = ArrayStack(10000)# creatinig an empty arraystack for redo
+        self.undo_stack = ArrayStack(10000)#creating an empty arraystack for undo
         
 
     def add_action(self, action: PaintAction) -> None:

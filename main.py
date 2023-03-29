@@ -291,11 +291,14 @@ class MyWindow(arcade.Window):
     # STUDENT PART
 
     def on_init(self):
-        """Initialisation that occurs after the system initialisation."""
-        self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y)
+        """
+        Initialisation that occurs after the system initialisation.
+        grid = creating grid object where the painting will occur
+        tracker= undo tracker object is created to track the actions
+        """
+        self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
-        self.action = PaintAction()
-        self.steps = PaintStep()
+       
     
 
 
@@ -311,18 +314,22 @@ class MyWindow(arcade.Window):
         layer: The layer being applied.
         px: x position of the brush.
         py: y position of the brush.
+        action= action object is created to store all the steps when painting.
+        steps= which layer has been added and where this has been applied.
         """
-        # this implements our painting onto the grid
+        action = PaintAction()
+        steps = PaintStep()
+        # this implements our painting onto the grid and creates variable coordinate list
         coordinate_list = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
         
-        #this is to add the steps to paint action so that we can att the action to the undo tracker
+        #this is to add the steps to paint action so that we can add the action to the undo tracker
         for values in coordinate_list:
-            values.x = values.value
-            values.y = values.key
-            self.steps.affected_grid_square = (values.x, values.y)
-            self.steps.affected_layer = layer
-            self.action.add_step(self.steps)
-        self.tracker.add_action(self.action)
+            values.x = values.value #assigning value to x coordinate
+            values.y = values.key  #assigning key to y coordinate
+            steps.affected_grid_square = (values.x, values.y) #the coordinates to which the layer in grid was applied 
+            steps.affected_layer = layer #the layer applied to the x y coordinates
+            action.add_step(steps)  #appends the coordinates and they layer applied to the action object
+            self.tracker.add_action(action) #paintaction is pushed into undo stack 
         
     def on_undo(self):
         """Called when an undo is requested."""
@@ -349,11 +356,11 @@ class MyWindow(arcade.Window):
 
     def on_increase_brush_size(self):
         """Called when an increase to the brush size is requested."""
-        self.grid.increase_brush_size()
+        self.grid.increase_brush_size() #increases brush size by calling function made in grid
 
     def on_decrease_brush_size(self):
         """Called when a decrease to the brush size is requested."""
-        self.grid.decrease_brush_size()
+        self.grid.decrease_brush_size() #decreases brush size by calling function made in grid 
 
 def main():
     """ Main function """
