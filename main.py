@@ -9,7 +9,6 @@ from action import *
 from layer_store import *
 
 
-
 class MyWindow(arcade.Window):
     """ Painter Window """
 
@@ -301,7 +300,6 @@ class MyWindow(arcade.Window):
        
     
 
-
     def on_reset(self):
         """Called when a window reset is requested."""
         pass
@@ -378,7 +376,5 @@ def run_with_func(func, pause=False):
     t.start()
     arcade.run()
 
-
 if __name__ == "__main__":
     main()
-    
