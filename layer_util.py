@@ -13,7 +13,7 @@ cur_layer_index = 0
 
 @dataclass
 class Layer:
-
+    
     index: int
     apply: function
     name: str = field(init=False)
@@ -57,6 +57,7 @@ def register(func):
     LAYERS[cur_layer_index] = Layer(cur_layer_index, func)
     cur_layer_index += 1
     return LAYERS[cur_layer_index-1]
+#LAYER[layer.index] = 
 
 def get_layers():
     import layers # Force all registrations to occur.
