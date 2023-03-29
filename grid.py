@@ -3,7 +3,7 @@ from data_structures.stack_adt import ArrayStack
 from data_structures.queue_adt import CircularQueue
 from data_structures.referential_array import ArrayR
 from layer_store import *
-from layer_store import SequenceLayerStore, SetLayerStore, AdditiveLayerStore
+
 
 class Grid:
     DRAW_STYLE_SET = "SET"
