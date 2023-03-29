@@ -59,12 +59,13 @@ class SetLayerStore(LayerStore):
         self.current_layer = None
         self.is_special = False
 
-    def add(self,layer): #implementing add in set layer store DO I NEED TO DO A DOCSTRING FOR THESE FUNCTIONS?
+    def add(self,layer)->bool: #implementing add in set layer store DO I NEED TO DO A DOCSTRING FOR THESE FUNCTIONS?
         self.current_layer = layer #the current layer will be replaced by the new chosen layer
+        return True
         
-    def erase(self,layer): #implementing erase in set layer store
+    def erase(self,layer) ->bool: #implementing erase in set layer store
         self.current_layer = None #the current layer will be removed 
-    
+        return True
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -105,12 +106,18 @@ class AdditiveLayerStore(LayerStore):
         our queue- creating an empty queue to add layers to, its operations are applied first in first out 
         """
         self.our_queue = CircularQueue(1000) #creating the empty queue 
-    
-    def add(self,layer):
-        self.our_queue.append(layer) #using the queue method append to add layers to our queue
+     
+    def add(self,layer)-> bool:
+        if not self.our_queue.is_full:
+            self.our_queue.append(layer) #using the queue method append to add layers to our queue
+            return True
+        return False 
 
-    def erase(self,layer):
+    def erase(self,layer)-> bool:
+        if self.our_queue.is_empty():
+            return False
         self.our_queue.serve() #using the queue method to remove layers from our queue
+        return True 
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]: 
         """
@@ -167,12 +174,18 @@ class SequenceLayerStore(LayerStore):
         """
         self.array_sorted_list = ArraySortedList(1000)
 
-    def add(self,layer: Layer):
-        self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
-        
-    def erase(self,layer: Layer):
+    def add(self,layer: Layer) ->bool:
+        if not self.array_sorted_list.is_full:
+            self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
+            return True
+        return False
+
+    def erase(self,layer: Layer) ->bool:
+        if self.array_sorted_list.is_empty:
+            return False
         index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
         self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
+        return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
