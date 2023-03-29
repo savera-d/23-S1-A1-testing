@@ -9,7 +9,7 @@ from data_structures.sorted_list_adt import ListItem
 class LayerStore(ABC):
 
     def __init__(self) -> None:
-        pass
+        
         self.current_layer = None
         self.current_colour= None
     @abstractmethod

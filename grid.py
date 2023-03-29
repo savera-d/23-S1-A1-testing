@@ -3,6 +3,7 @@ from data_structures.stack_adt import ArrayStack
 from data_structures.queue_adt import CircularQueue
 from data_structures.referential_array import ArrayR
 from layer_store import *
+from layer_store import SequenceLayerStore, SetLayerStore, AdditiveLayerStore
 
 class Grid:
     DRAW_STYLE_SET = "SET"
@@ -49,7 +50,7 @@ class Grid:
         elif self.draw_style == 'ADD':
             for xvals in range(x):
                 for yvals in range(y):
-                    self.grid[xvals][yvals] = AdditiveLayerStore()
+                    self.grid[xvals][yvals] = AdditiveLayerStore() 
             
         
 
@@ -87,14 +88,19 @@ class Grid:
             for j in range(self.y):
                 LayerStore.special()
 
+
     def grid_paint(self, layer: Layer, x, y, brush_size):
+        temp_list = ArraySortedList(1000)
         self.brush_size = brush_size
         for i in range(self.x):
             for j in range(self.y):
                 distance = self.manhattan_distance(x,y,i,j)
                 if distance < self.brush_size:
                     self.grid[i][j].add(layer)
+                    temp_list.add(ListItem(i,j))
 
+
+        return temp_list
     def manhattan_distance(x, y, x2, y2):
         return abs(x - x2) + abs(y - y2)
 

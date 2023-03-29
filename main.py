@@ -294,7 +294,8 @@ class MyWindow(arcade.Window):
         """Initialisation that occurs after the system initialisation."""
         self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y)
         self.tracker = UndoTracker()
-        self.action = None
+        self.action = PaintAction()
+        self.steps = PaintStep()
     
 
 
@@ -312,15 +313,16 @@ class MyWindow(arcade.Window):
         py: y position of the brush.
         """
         # this implements our painting onto the grid
-        self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
+        coordinate_list = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
         
-
-
-
-
-
-
-       
+        #this is to add the steps to paint action so that we can att the action to the undo tracker
+        for values in coordinate_list:
+            values.x = values.value
+            values.y = values.key
+            self.steps.affected_grid_square = (values.x, values.y)
+            self.steps.affected_layer = layer
+            self.action.add_step(self.steps)
+        self.tracker.add_action(self.action)
         
     def on_undo(self):
         """Called when an undo is requested."""

@@ -31,10 +31,10 @@ class UndoTracker:
         :return: The action that was undone, or None.
         """
         if len (self.undo_stack)>0:  #check if undo stack is empty 
-            item = self.undo_stack.pop()#paintaction is removed from undo stack
-            self.redo_stack.push(item) #paintaction is added to redo stack
-            item.undo_apply(grid) #this removes the item we are undoing from the grid object
-            return grid 
+            action = self.undo_stack.pop()#paintaction is removed from undo stack
+            self.redo_stack.push(action) #paintaction is added to redo stack
+            action.undo_apply(grid) #this removes the item we are undoing from the grid object
+            return action
         return None #if undo stack is empty 
         
     def redo(self, grid: Grid) -> PaintAction|None:
