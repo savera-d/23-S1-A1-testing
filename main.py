@@ -297,6 +297,7 @@ class MyWindow(arcade.Window):
         tracker= undo tracker object is created to track the actions
         replay tracker = keeps track of the actions that can be replayed later on
         action = the action of painting a layer
+        complexity = as these are all assignments, the complexity is o(1) for best and worst case
         """
         self.grid = Grid(Grid.DRAW_STYLE_SET, MyWindow.GRID_SIZE_X, MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
@@ -320,8 +321,9 @@ class MyWindow(arcade.Window):
             action= action object is created to store all the steps when painting.
             steps= which layer has been added and where this has been applied.
         complexity = 
-        best-
-        worst-
+        best- o(n) where n is the size of the coordinate_queue and this will only happen if we cannot call grid paint or grid paint is empty
+        worst- o(n^3) when in each iteration we call grid paint which has a complexity of o(n^2) and the coordinate queue is iterated through in the for loop which has a complexity of o(n)
+        
         """
         
         # this implements our painting onto the grid and creates variable coordinate list
@@ -347,6 +349,7 @@ class MyWindow(arcade.Window):
         """
         Called when an undo is requested
         will recognise if it is an undo action and add it to replay tracker
+        complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and is constant CHECK THIS
         """
         self.replay_tracker.add_action(self.action, True)   #undo action is added into replay tracker and marked true
        
@@ -354,11 +357,16 @@ class MyWindow(arcade.Window):
         """
         Called when a redo is requested
         will pass the redo action into the replay tracker 
+        complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and constant.
         """
         self.replay_tracker.add_action(self.action, False) #redo action is added into replay tracker and marked false
 
     def on_special(self):
-        """Called when the special action is requested."""
+        """
+        Called when the special action is requested.
+        will pass the special action into the replay tracker
+        complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and constant.
+        """
         self.replay_tracker(self.action, False)
 
     def on_replay_start(self):
@@ -375,12 +383,16 @@ class MyWindow(arcade.Window):
     def on_increase_brush_size(self):
         """
         Called when an increase to the brush size is requested.
+        called from grid 
+        complexity- increase_brush_size function has a complexity of o(1) which is explained in grid.
         """
         self.grid.increase_brush_size() #increases brush size by calling function made in grid
 
     def on_decrease_brush_size(self):
         """
         Called when a decrease to the brush size is requested.
+        called from grids
+        complexity- decrease_brush_size function has a complexity of o(1) which is explained in grid.
         """
         self.grid.decrease_brush_size() #decreases brush size by calling function made in grid 
 

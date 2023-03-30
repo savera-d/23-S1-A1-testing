@@ -43,7 +43,7 @@ class ReplayTracker:
             grid- the grid is an input in order to check what layers were applied to the grid object created
         returns- true if there is no action to do and false if the redo apply action is run
         complexity- the big o of the functions is_empty and serve is o(1), therefore the best and worse case time complexity of this function is also o(1)
-        HELP COMPLEXITY
+        this is also because the function is constant in time regardless of the length of the queue so the time complexity stays constant.
         """
         if self.queue.is_empty(): #check that there is action to do 
             return True

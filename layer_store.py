@@ -59,6 +59,7 @@ class SetLayerStore(LayerStore):
         initialise the set layer store class
         current layer = the current layer that is being applied on the grid 
         is special = creates a toggle which changes if special is applied or not 
+        complexity = o(1) as these are assignments
         """
         self.current_layer = None
         self.is_special = False
@@ -67,7 +68,10 @@ class SetLayerStore(LayerStore):
         """
         adds a layer to set layer store
         returns a boolean of true if the set layer store is changed due to an addition 
-        layer: the layer type chosen to be applied by the user 
+        argument-
+            layer: the layer type chosen to be applied by the user 
+        return: returns true if a layer is added
+        complexity: o(1) best and worst complexity
         """
         #implementing add in set layer store
         self.current_layer = layer #the current layer will be replaced by the new chosen layer
@@ -77,7 +81,10 @@ class SetLayerStore(LayerStore):
         """
         removes a layer from the set layer store
         returns a boolean of true if the layer is removed using the erase function
-        layer: the layer that is being removed from the layer store
+        argument-
+            layer: the layer that is being removed from the layer store
+        return: returns true if a layer is erased
+        complexity: o(1) best and worst complexity
         """
         #implementing erase
         self.current_layer = None #the current layer will be removed 
@@ -86,10 +93,13 @@ class SetLayerStore(LayerStore):
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
-        start= start colour tuple (r,g,b)
-        timestamp= integer value 
-        x= x coordinate (int)
-        y= y coordinate (int)
+        arguments-
+            start= start colour tuple (r,g,b)
+            timestamp= integer value 
+            x= x coordinate (int)
+            y= y coordinate (int)
+        return: return start as a tuple if no effect is applied, or else return the new applied colour as a tuple
+        complexity: 
         """
         #implementing get colour
         if self.current_layer == None: #if there is no current layer applied
@@ -201,66 +211,66 @@ class SequenceLayerStore(LayerStore):
         In the event of two layers being the median names, pick the lexicographically smaller one.
     """
 
-def __init__(self):
-    """
-    initialises the Sequence layer store class
-    array sorted list = storing our layers in an array sorted list 
-    """
-    self.array_sorted_list = ArraySortedList(1000) #creating an empty array sorted list
-    self.lexico = ArraySortedList(1000) #lexicogrphically ordered empty array sorted list
+    def __init__(self):
+        """
+        initialises the Sequence layer store class
+        array sorted list = storing our layers in an array sorted list 
+        """
+        self.array_sorted_list = ArraySortedList(1000) #creating an empty array sorted list
+        self.lexico = ArraySortedList(1000) #lexicogrphically ordered empty array sorted list
 
-def add(self,layer: Layer) ->bool:
-    """
+    def add(self,layer: Layer) ->bool:
+        """
 
-    """
-    if self.array_sorted_list.__contains__(ListItem(layer, layer.index)): # check whether the array sorted list already has the layer.
-        return False
-    self.array_sorted_list.add(ListItem(layer, layer.index))
-    self.lexico.add(ListItem(layer, layer.name)) # save it in the lexicological order to be used in special
-    return True
+        """
+        if self.array_sorted_list.__contains__(ListItem(layer, layer.index)): # check whether the array sorted list already has the layer.
+            return False
+        self.array_sorted_list.add(ListItem(layer, layer.index))
+        self.lexico.add(ListItem(layer, layer.name)) # save it in the lexicological order to be used in special
+        return True
 
-def erase(self,layer: Layer) ->bool:
-    """
+    def erase(self,layer: Layer) ->bool:
+        """
 
-    """
-    if self.array_sorted_list.is_empty(): # makesure that the list is not empty
-        return False
-    index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
-    self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
-    index = self.lexico.index(ListItem(layer, layer.name)) # find the index in the lexico list
-    self.lexico.delete_at_index(index) #delete Listitem in the lexico list.
-    return True
+        """
+        if self.array_sorted_list.is_empty(): # makesure that the list is not empty
+            return False
+        index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
+        self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
+        index = self.lexico.index(ListItem(layer, layer.name)) # find the index in the lexico list
+        self.lexico.delete_at_index(index) #delete Listitem in the lexico list.
+        return True
 
-def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
-    """
-    Returns the colour this square should show, given the current layers.
-    """
-    if len(self.array_sorted_list) == 0: # if the list is empty return the start tuple
-        return start
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+        """
+        Returns the colour this square should show, given the current layers.
+        """
+        if len(self.array_sorted_list) == 0: # if the list is empty return the start tuple
+            return start
         
-    for layer in self.array_sorted_list: # go through the layers in the array sorted list
-        if layer != None: # if the position is empty do nothgin and go to next loop
-            layer = layer.value # save the layer from the ListItem coming from the array sorted list
+        for layer in self.array_sorted_list: # go through the layers in the array sorted list
+            if layer != None: # if the position is empty do nothgin and go to next loop
+                layer = layer.value # save the layer from the ListItem coming from the array sorted list
       
-            colour = layer.apply(start, timestamp, x, y) #apply and get the colour tuple
-            start = colour #update the start tuple for next loop
+                colour = layer.apply(start, timestamp, x, y) #apply and get the colour tuple
+                start = colour #update the start tuple for next loop
         
-    return colour #return the final color tuple.
+        return colour #return the final color tuple.
     
     
-def special(self): 
-    """
-    special for sequential layer store removes the median "applying" layer based on its name, lexicographically ordered.
-    - in the case of an even number of layers we select the lexicographically smaller ordered name
-    median pos = 
-    array sorted list = 
-    """
-    if len(self.lexico)%2 != 0:
-            median_pos = len(self.lexico)/2 -1 # in order to change it from the position to an index value we minus 1
-            median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.
-            item = self.lexico[median_pos]
-            self.erase(item)
-    if len(self.lexico)%2 == 0:
-            median_pos = len(self.lexico)/2 -1 # we minus 1 in order to change the position to an index
-            item = self.lexico[median_pos]
-            self.erase(item)
+    def special(self): 
+        """
+        special for sequential layer store removes the median "applying" layer based on its name, lexicographically ordered.
+        - in the case of an even number of layers we select the lexicographically smaller ordered name
+        median pos = 
+        array sorted list = 
+        """
+        if len(self.lexico)%2 != 0:
+                median_pos = len(self.lexico)/2 -1 # in order to change it from the position to an index value we minus 1
+                median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.
+                item = self.lexico[median_pos]
+                self.erase(item)
+        if len(self.lexico)%2 == 0:
+                median_pos = len(self.lexico)/2 -1 # we minus 1 in order to change the position to an index
+                item = self.lexico[median_pos]
+                self.erase(item)
