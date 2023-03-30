@@ -67,7 +67,6 @@ class Grid:
                     self.grid[xvals][yvals] = AdditiveLayerStore() #allocates each grid square to additive layer store type
             
         
-
     
     def increase_brush_size(self):
         """
