@@ -21,11 +21,13 @@ class ReplayTracker:
     def add_action(self, action: PaintAction, is_undo: bool=False) -> None:
         """
         Adds an action to the replay.
-
         `is_undo` specifies whether the action was an undo action or not.
         Special, Redo, and Draw all have this is False.
-        action: the paint action that occured onto the grid
-        is_undo: will be true or false to show if an action was undone or not
+        arguments-
+            action: the paint action that occured onto the grid
+            is_undo: will be true or false to show if an action was undone or not
+        complexity- the best and worst case of this function is o(1), 
+        appending an element to the end of the queue stays constant, and for this task the queue will not require any resizing of the list.
         """
         self.queue.append((action, is_undo)) #add the action and whether it is an 'undo' action to our queue
         
@@ -37,7 +39,11 @@ class ReplayTracker:
         Returns a boolean.
             - If there were no more actions to play, and so nothing happened, return True.
             - Otherwise, return False.
-        grid- the grid is an input in order to check what layers were applied to the grid object created
+        arguments-
+            grid- the grid is an input in order to check what layers were applied to the grid object created
+        returns- true if there is no action to do and false if the redo apply action is run
+        complexity- the big o of the functions is empty and serve is o(1), therefore the best and worse case time complexity of this function is also o(1)
+        HELP COMPLEXITY
         """
         if self.queue.is_empty(): #check that there is action to do 
             return True

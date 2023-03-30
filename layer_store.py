@@ -201,60 +201,65 @@ class SequenceLayerStore(LayerStore):
         In the event of two layers being the median names, pick the lexicographically smaller one.
     """
 
-    def __init__(self):
-        """
-        initialises the Sequence layer store class
-        array sorted list = storing our layers in an array sorted list 
-        """
-        self.array_sorted_list = ArraySortedList(1000)
+def __init__(self):
+    """
+    initialises the Sequence layer store class
+    array sorted list = storing our layers in an array sorted list 
+    """
+    self.array_sorted_list = ArraySortedList(1000)
+    self.lexico = ArraySortedList(1000)
 
-    def add(self,layer: Layer) ->bool:
-        """
-        """
-        if not self.array_sorted_list.is_full:
-            self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
-            return True
+def add(self,layer: Layer) ->bool:
+     # if not self.array_sorted_list.is_full:
+    #     self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
+    #     return True
+    # return False
+    #check if the layer is in the list
+    if self.array_sorted_list.__contains__(ListItem(layer, layer.index)): # check whether the array sorted list already has the layer.
         return False
+    self.array_sorted_list.add(ListItem(layer, layer.index))
+    self.lexico.add(ListItem(layer, layer.name)) # save it in the lexicological order to be used in special
+    return True
 
-    def erase(self,layer: Layer) ->bool:
-        """
-        """
-        if self.array_sorted_list.is_empty:
-            return False
-        index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
-        self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
-        return True
+def erase(self,layer: Layer) ->bool:
+    if self.array_sorted_list.is_empty: # makesure that the list is not empty
+        return False
+    index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
+    self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
+    index = self.lexico.index(ListItem(layer, layer.name)) # finnd the index in the lexico list
+    self.lexico.delete_at_index(index) #delete Listitem in the lexico list.
+    return True
 
-    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
-        """
-        Returns the colour this square should show, given the current layers.
-        """
-        if len(self.array_sorted_list) == 0:
-            return start
+def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+    """
+    Returns the colour this square should show, given the current layers.
+    """
+    if len(self.array_sorted_list) == 0: # if the list is empty return the start tuple
+        return start
         
-        for layer in self.array_sorted_list:
-            if layer != None:
-                layer = layer.value
+    for layer in self.array_sorted_list: # go through the layers in the array sorted list
+        if layer != None: # if the position is empty do nothgin and go to next loop
+            layer = layer.value # save the layer from the ListItem coming from the array sorted list
       
-                colour = layer.apply(start, timestamp, x, y)
-                start = colour
+            colour = layer.apply(start, timestamp, x, y) #apply and get the colour tuple
+            start = colour #update the start tuple for next loop
         
-        return colour
+    return colour #return the final color tuple.
     
     
-    def special(self): 
-        """
-        special for sequential layer store removes the median "applying" layer based on its name, lexicographically ordered.
-        - in the case of an even number of layers we select the lexicographically smaller ordered name
-        median pos = 
-        array sorted list = 
-        """
-        if len(self.array_sorted_list)%2 != 0:
-                median_pos = len(list)/2 -1 # in order to change it from the position to an index value we minus 1
-                median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.
-                list.delete_at_index(median_pos)
-        if len(self.array_sorted_list)%2 == 0:
-                median_pos = len(list)/2 -1 # we minus 1 in order to change the position to an index
-                list.delete_at_index(median_pos)
-        return self.array_sorted_list
-
+def special(self): 
+    """
+    special for sequential layer store removes the median "applying" layer based on its name, lexicographically ordered.
+    - in the case of an even number of layers we select the lexicographically smaller ordered name
+    median pos = 
+    array sorted list = 
+    """
+    if len(self.lexico)%2 != 0:
+            median_pos = len(self.lexico)/2 -1 # in order to change it from the position to an index value we minus 1
+            median_pos += 0.5 # we add the 0.5 in order to get a whole number that we can index.
+            item = self.lexico[median_pos]
+            self.erase(item)
+    if len(self.lexico)%2 == 0:
+            median_pos = len(self.lexico)/2 -1 # we minus 1 in order to change the position to an index
+            item = self.lexico[median_pos]
+            self.erase(item)

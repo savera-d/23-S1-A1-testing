@@ -295,6 +295,8 @@ class MyWindow(arcade.Window):
         Initialisation that occurs after the system initialisation.
         grid = creating grid object where the painting will occur
         tracker= undo tracker object is created to track the actions
+        replay tracker = 
+        action = 
         """
         self.grid = Grid(Grid.DRAW_STYLE_SET, MyWindow.GRID_SIZE_X, MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
