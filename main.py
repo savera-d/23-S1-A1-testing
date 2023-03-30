@@ -296,7 +296,7 @@ class MyWindow(arcade.Window):
         grid = creating grid object where the painting will occur
         tracker= undo tracker object is created to track the actions
         """
-        self.grid = Grid(self.draw_style,MyWindow.GRID_SIZE_X,MyWindow.GRID_SIZE_Y) 
+        self.grid = Grid(Grid.DRAW_STYLE_SET, MyWindow.GRID_SIZE_X, MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
         self.replay_tracker = ReplayTracker()
         self.action = None
@@ -320,14 +320,15 @@ class MyWindow(arcade.Window):
         """
         
         # this implements our painting onto the grid and creates variable coordinate list
-        coordinate_list = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
+        coordinate_queue = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
         templist = []
         
         #this is to add the steps to paint action so that we can add the action to the undo tracker
-        for values in coordinate_list:
-            values.x = values.value #assigning value to x coordinate
-            values.y = values.key  #assigning key to y coordinate
-            affected_grid_square = tuple(values.x, values.y) #the coordinates to which the layer in grid was applied 
+        for i in range(len(coordinate_queue)):
+            values = coordinate_queue.serve()
+            x_co = values[0] #assigning value to x coordinate
+            y_co = values[1]  #assigning key to y coordinate
+            affected_grid_square = tuple((x_co, y_co)) #the coordinates to which the layer in grid was applied 
             affected_layer = layer #the layer applied to the x y coordinates
             steps = PaintStep(affected_grid_square, affected_layer)
             templist.append(steps) # this is the list that we iinput into the paintaction.

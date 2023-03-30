@@ -2,15 +2,20 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from data_structures.stack_adt import ArrayStack
 from layer_util import Layer
-from grid import * # this should import everything
+
 from data_structures.queue_adt import CircularQueue
 from data_structures.array_sorted_list import ArraySortedList
 from data_structures.sorted_list_adt import ListItem
 class LayerStore(ABC):
 
     def __init__(self) -> None:
+        """
+        initialising the layerstore class
+        """
+        #defining variables that will be used within our class
         self.current_layer = None
         self.current_colour= None
+
     @abstractmethod
     def add(self, layer: Layer) -> bool:
         """
@@ -58,13 +63,25 @@ class SetLayerStore(LayerStore):
         self.current_layer = None
         self.is_special = False
 
-    def add(self,layer)->bool: #implementing add in set layer store DO I NEED TO DO A DOCSTRING FOR THESE FUNCTIONS?
+    def add(self,layer)->bool: 
+        """
+        adds a layer to set layer store
+        returns a boolean of true if the set layer store is changed due to an addition 
+        layer: the layer type chosen to be applied by the user 
+        """
+        #implementing add in set layer store
         self.current_layer = layer #the current layer will be replaced by the new chosen layer
-        return True
+        return True #function returns true if a layer is added
         
     def erase(self,layer) ->bool: #implementing erase in set layer store
+        """
+        removes a layer from the set layer store
+        returns a boolean of true if the layer is removed using the erase function
+        layer: the layer that is being removed from the layer store
+        """
+        #implementing erase
         self.current_layer = None #the current layer will be removed 
-        return True
+        return True #function returns true if erase is applied
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -74,6 +91,7 @@ class SetLayerStore(LayerStore):
         x= x coordinate (int)
         y= y coordinate (int)
         """
+        #implementing get colour
         if self.current_layer == None: #if there is no current layer applied
             return start   #return the starting tuple as no effects have been added
         
@@ -107,20 +125,32 @@ class AdditiveLayerStore(LayerStore):
         self.our_queue = CircularQueue(1000) #creating the empty queue 
      
     def add(self,layer)-> bool:
-        if self.our_queue.is_full():
-            return False
-        self.our_queue.append(layer)  #using the queue method append to add layers to our queue
-        return True
+        """
+        adds a layer the additive layer store 
+        if the additive layer store queue is full then no layer is added and the function will return boolean false
+        if the additive layer store queue is not full then a layer is added and the function will return a boolean true
+        layer: the layer type chosen to be applied by the user 
+        """
+        #implementing add
+        if self.our_queue.is_full(): #checks if our queue is full
+            return False #if the queue is full return false
+        self.our_queue.append(layer)  #using the queue method append to add layers to our queue if it is not full
+        return True #if a layer is added return true
 
     def erase(self,layer)-> bool:
-        if self.our_queue.is_empty():
-            return False
-        self.our_queue.serve() #using the queue method to remove layers from our queue
-        return True 
+        """
+        removes a layer the additive layer store 
+        if the additive layer store queue is empty then no layer is removed and the function will return boolean false
+        if the additive layer store queue is not empty then a layer is removed and the function will return a boolean true
+        layer: the layer type chosen to be applied by the user 
+        """
+        #implementing erase
+        if self.our_queue.is_empty():#checking if the queue is empty 
+            return False #return false if the queue is empty 
+        self.our_queue.serve() #using the queue method to remove layers from our queue if it is not empty 
+        return True #if a layer is removed return true 
         
-        # self.our_queue.serve()
-        # return True
-    
+
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]: 
         """
         Returns the colour this square should show, given the current layers.
@@ -129,6 +159,7 @@ class AdditiveLayerStore(LayerStore):
         x= x coordinate (int)
         y= y coordinate (int)
         """
+        #implmementing get colour 
         if self.our_queue.is_empty(): #if there are no layers in our queue
             return start #return the start tuple 
         else:
@@ -147,6 +178,7 @@ class AdditiveLayerStore(LayerStore):
         """
         When special is applied additive layer reverses the "ages" of each layer, so the oldest layer is now the youngest layer, etc
         """
+        #implementing special
         temp_stack = ArrayStack(1000) #creating an empty array stack 
         new_queue = CircularQueue(1000) #creating a new circular queue
         for i in range (len(self.our_queue)): #going through the layers in our queue 
@@ -177,12 +209,16 @@ class SequenceLayerStore(LayerStore):
         self.array_sorted_list = ArraySortedList(1000)
 
     def add(self,layer: Layer) ->bool:
+        """
+        """
         if not self.array_sorted_list.is_full:
             self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
             return True
         return False
 
     def erase(self,layer: Layer) ->bool:
+        """
+        """
         if self.array_sorted_list.is_empty:
             return False
         index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete

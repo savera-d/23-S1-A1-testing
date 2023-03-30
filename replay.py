@@ -24,8 +24,10 @@ class ReplayTracker:
 
         `is_undo` specifies whether the action was an undo action or not.
         Special, Redo, and Draw all have this is False.
+        action: the paint action that occured onto the grid
+        is_undo: will be true or false to show if an action was undone or not
         """
-        self.queue.append((action, is_undo))
+        self.queue.append((action, is_undo)) #add the action and whether it is an 'undo' action to our queue
         
 
 
@@ -35,6 +37,7 @@ class ReplayTracker:
         Returns a boolean.
             - If there were no more actions to play, and so nothing happened, return True.
             - Otherwise, return False.
+        grid- the grid is an input in order to check what layers were applied to the grid object created
         """
         if self.queue.is_empty(): #check that there is action to do 
             return True

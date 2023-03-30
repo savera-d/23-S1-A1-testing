@@ -15,12 +15,12 @@ class UndoTracker:
         
 
     def add_action(self, action: PaintAction) -> None:
-        #comment
         """
         Adds an action to the undo tracker.
 
         If your collection is already full,
         feel free to exit early and not add the action.
+        action: HELP
         """
         self.undo_stack.push(action)#paintaction is pushed into undo stack 
         
@@ -31,6 +31,7 @@ class UndoTracker:
         If there are no actions to undo, simply do nothing.
 
         :return: The action that was undone, or None.
+        grid: HELP
         """
         if len (self.undo_stack)>0:  #check if undo stack is empty 
             action = self.undo_stack.pop()#paintaction is removed from undo stack
@@ -43,7 +44,7 @@ class UndoTracker:
         """
         Redo an operation that was previously undone.
         If there are no actions to redo, simply do nothing.
-
+        grid:HELP
         :return: The action that was redone, or None.
         """
         if len (self.redo_stack)>0:  #check if redo stack is empty 
