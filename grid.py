@@ -128,8 +128,8 @@ class Grid:
         self.brush_size = brush_size 
         for i in range(self.x): #goes through all grid squares (each x and corresponding y coordinate)
             for j in range(self.y):
-                # distance = abs(x-i) + abs(y-j)
-                distance = self.manhattan_distance(x,y,i,j)  #distance is the manhattan distance calculated by the function below
+                distance = abs(x-i) + abs(y-j) #distance is the manhattan distance calculated by this formula
+                #distance = self.manhattan_distance(x,y,i,j)  
                 if distance < self.brush_size: #checks that the manhattan distance is less than the brush size
                     self.grid[i][j].add(layer) #the coordinates within  manhattan distance will have the layer applied to them
                     coordinate_queue.append((i,j)) #adds the x y coordinates to the list we created

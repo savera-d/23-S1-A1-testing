@@ -206,15 +206,13 @@ def __init__(self):
     initialises the Sequence layer store class
     array sorted list = storing our layers in an array sorted list 
     """
-    self.array_sorted_list = ArraySortedList(1000)
-    self.lexico = ArraySortedList(1000)
+    self.array_sorted_list = ArraySortedList(1000) #creating an empty array sorted list
+    self.lexico = ArraySortedList(1000) #lexicogrphically ordered empty array sorted list
 
 def add(self,layer: Layer) ->bool:
-     # if not self.array_sorted_list.is_full:
-    #     self.array_sorted_list.add(ListItem(layer, layer.index)) #using the sorted list's method append to add layers to our sorted list
-    #     return True
-    # return False
-    #check if the layer is in the list
+    """
+
+    """
     if self.array_sorted_list.__contains__(ListItem(layer, layer.index)): # check whether the array sorted list already has the layer.
         return False
     self.array_sorted_list.add(ListItem(layer, layer.index))
@@ -222,11 +220,14 @@ def add(self,layer: Layer) ->bool:
     return True
 
 def erase(self,layer: Layer) ->bool:
-    if self.array_sorted_list.is_empty: # makesure that the list is not empty
+    """
+
+    """
+    if self.array_sorted_list.is_empty(): # makesure that the list is not empty
         return False
     index = self.array_sorted_list.index(ListItem(layer,layer.index)) #finding the index of the layer we are trying to delete
     self.array_sorted_list.delete_at_index(index) #using the sorted lists method to delete the layer at the index we want
-    index = self.lexico.index(ListItem(layer, layer.name)) # finnd the index in the lexico list
+    index = self.lexico.index(ListItem(layer, layer.name)) # find the index in the lexico list
     self.lexico.delete_at_index(index) #delete Listitem in the lexico list.
     return True
 

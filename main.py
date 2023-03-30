@@ -295,8 +295,8 @@ class MyWindow(arcade.Window):
         Initialisation that occurs after the system initialisation.
         grid = creating grid object where the painting will occur
         tracker= undo tracker object is created to track the actions
-        replay tracker = 
-        action = 
+        replay tracker = keeps track of the actions that can be replayed later on
+        action = the action of painting a layer
         """
         self.grid = Grid(Grid.DRAW_STYLE_SET, MyWindow.GRID_SIZE_X, MyWindow.GRID_SIZE_Y) 
         self.tracker = UndoTracker()
@@ -304,7 +304,6 @@ class MyWindow(arcade.Window):
         self.action = None
        
     
-
     def on_reset(self):
         """Called when a window reset is requested."""
         pass
@@ -314,11 +313,15 @@ class MyWindow(arcade.Window):
         Called when a grid square is clicked on, which should trigger painting in the vicinity.
         Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) can be safely ignored.
 
-        layer: The layer being applied.
-        px: x position of the brush.
-        py: y position of the brush.
-        action= action object is created to store all the steps when painting.
-        steps= which layer has been added and where this has been applied.
+        arguments = 
+            layer: The layer being applied.
+            px: x position of the brush.
+            py: y position of the brush.
+            action= action object is created to store all the steps when painting.
+            steps= which layer has been added and where this has been applied.
+        complexity = 
+        best-
+        worst-
         """
         
         # this implements our painting onto the grid and creates variable coordinate list
@@ -341,13 +344,18 @@ class MyWindow(arcade.Window):
         self.replay_tracker.add_action(self.action, False) #is undo is going to be false here.
         
     def on_undo(self):
-        """Called when an undo is requested."""
-        #self. action should be the last action that was done
-        self.replay_tracker.add_action(self.action, True)
+        """
+        Called when an undo is requested
+        will recognise if it is an undo action and add it to replay tracker
+        """
+        self.replay_tracker.add_action(self.action, True)   #undo action is added into replay tracker and marked true
        
     def on_redo(self):
-        """Called when a redo is requested."""
-        self.replay_tracker.add_action(self.action, False)
+        """
+        Called when a redo is requested
+        will pass the redo action into the replay tracker 
+        """
+        self.replay_tracker.add_action(self.action, False) #redo action is added into replay tracker and marked false
 
     def on_special(self):
         """Called when the special action is requested."""
@@ -365,11 +373,15 @@ class MyWindow(arcade.Window):
         return True
 
     def on_increase_brush_size(self):
-        """Called when an increase to the brush size is requested."""
+        """
+        Called when an increase to the brush size is requested.
+        """
         self.grid.increase_brush_size() #increases brush size by calling function made in grid
 
     def on_decrease_brush_size(self):
-        """Called when a decrease to the brush size is requested."""
+        """
+        Called when a decrease to the brush size is requested.
+        """
         self.grid.decrease_brush_size() #decreases brush size by calling function made in grid 
 
 def main():
