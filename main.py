@@ -293,15 +293,20 @@ class MyWindow(arcade.Window):
     def on_init(self):
         """
         Initialisation that occurs after the system initialisation.
-        grid = creating grid object where the painting will occur
-        tracker= undo tracker object is created to track the actions
-        replay tracker = keeps track of the actions that can be replayed later on
-        action = the action of painting a layer
-        complexity = as these are all assignments, the complexity is o(1) for best and worst case
+        grid = creating grid object where the painting will occur of type Grid
+        tracker= undo tracker object is created to track the actions of type UndoTracker
+        replay tracker = keeps track of the actions that can be replayed later on of type ReplayTracker
+        action = the action of painting a layer of type PaintAction
+        complexity = as these are all assignments, the complexity is o(n) for best and worst case as  
+        the complexity of creating the grid is O(n) 
         """
+        #worst case complexity = O(n) when creating hte grid
         self.grid = Grid(Grid.DRAW_STYLE_SET, MyWindow.GRID_SIZE_X, MyWindow.GRID_SIZE_Y) 
+        #worst case complexity = O(1)
         self.tracker = UndoTracker()
+        #worst case complexity = O(1)
         self.replay_tracker = ReplayTracker()
+        #worst case complexity = O(1)
         self.action = None
        
     
@@ -315,34 +320,46 @@ class MyWindow(arcade.Window):
         Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) can be safely ignored.
 
         arguments = 
-            layer: The layer being applied.
-            px: x position of the brush.
-            py: y position of the brush.
-            action= action object is created to store all the steps when painting.
-            steps= which layer has been added and where this has been applied.
+            layer: The layer being applied.(Layer)
+            px: x position of the brush. (int)
+            py: y position of the brush.(int)
+            action= action object is created to store all the steps when painting.(PaintAction)
+            steps= which layer has been added and where this has been applied. (PaintStep)
         complexity = 
         best- o(n) where n is the size of the coordinate_queue and this will only happen if we cannot call grid paint or grid paint is empty
-        worst- o(n^3) when in each iteration we call grid paint which has a complexity of o(n^2) and the coordinate queue is iterated through in the for loop which has a complexity of o(n)
+        worst- o(n) when in each iteration we call grid paint which has a complexity of o(n^2) and the coordinate queue is iterated through in the for loop which has a complexity of o(n)
         
         """
         
         # this implements our painting onto the grid and creates variable coordinate list
+        #worst case complexity = O(n)
         coordinate_queue = self.grid.grid_paint(layer, px,  py, self.grid.brush_size)
+        #worst case complexity = O(1)
         templist = []
         
         #this is to add the steps to paint action so that we can add the action to the undo tracker
+        #worst case complexity = O(n) where n is hte length of coordinate queue
         for i in range(len(coordinate_queue)):
+            #worst case complexity = O(1)
             values = coordinate_queue.serve()
+            #worst case complexity = O(1)
             x_co = values[0] #assigning value to x coordinate
+            #worst case complexity = O(1)
             y_co = values[1]  #assigning key to y coordinate
+            #worst case complexity = O(1)
             affected_grid_square = tuple((x_co, y_co)) #the coordinates to which the layer in grid was applied 
+            #worst case complexity = O(1)
             affected_layer = layer #the layer applied to the x y coordinates
+            #worst case complexity = O(1)
             steps = PaintStep(affected_grid_square, affected_layer)
+            #worst case complexity = O(1)
             templist.append(steps) # this is the list that we iinput into the paintaction.
-        
+        #worst case complexity = O(1)
         self.action = PaintAction(templist, False) # create the paint action object with all of the steps and whether it is a special or not. 
+        #worst case complexity = O(1)
         self.tracker.add_action(self.action) #paintaction is pushed into undo stack and is special is passed as False
         #add the action to the replay tracker too now.
+        #worst case complexity = O(1)
         self.replay_tracker.add_action(self.action, False) #is undo is going to be false here.
         
     def on_undo(self):
@@ -351,6 +368,7 @@ class MyWindow(arcade.Window):
         will recognise if it is an undo action and add it to replay tracker
         complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and is constant CHECK THIS
         """
+        #worst case complexity = O(1)
         self.replay_tracker.add_action(self.action, True)   #undo action is added into replay tracker and marked true
        
     def on_redo(self):
@@ -359,6 +377,7 @@ class MyWindow(arcade.Window):
         will pass the redo action into the replay tracker 
         complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and constant.
         """
+        #worst case complexity = O(1)
         self.replay_tracker.add_action(self.action, False) #redo action is added into replay tracker and marked false
 
     def on_special(self):
@@ -367,6 +386,7 @@ class MyWindow(arcade.Window):
         will pass the special action into the replay tracker
         complexity- best and worst complexity is o(1) as add action has a complexity of o(1) and constant.
         """
+        #worst case complexity = O(1)
         self.replay_tracker(self.action, False)
 
     def on_replay_start(self):
@@ -386,6 +406,7 @@ class MyWindow(arcade.Window):
         called from grid 
         complexity- increase_brush_size function has a complexity of o(1) which is explained in grid.
         """
+        #worst case complexity = O(1)
         self.grid.increase_brush_size() #increases brush size by calling function made in grid
 
     def on_decrease_brush_size(self):
@@ -394,6 +415,7 @@ class MyWindow(arcade.Window):
         called from grids
         complexity- decrease_brush_size function has a complexity of o(1) which is explained in grid.
         """
+        #worst case complexity = O(1)
         self.grid.decrease_brush_size() #decreases brush size by calling function made in grid 
 
 def main():
