@@ -5,6 +5,11 @@ from data_structures.queue_adt import CircularQueue
 
 class ReplayTracker:
     def __init__(self):
+        """
+        Initialise the undo tracker, create the variable for the self.queue to save the actions
+        best and worst case complexities = O(1)
+        """
+        #worst case complexities = O(1)
         self.queue = CircularQueue(1000)
 
 
@@ -24,11 +29,12 @@ class ReplayTracker:
         `is_undo` specifies whether the action was an undo action or not.
         Special, Redo, and Draw all have this is False.
         arguments-
-            action: the paint action that occured onto the grid
-            is_undo: will be true or false to show if an action was undone or not
+            action: the paint action that occured onto the grid(PaintAction)
+            is_undo: will be true or false to show if an action was undone or not (Bool)
         complexity- the best and worst case of this function is o(1), 
         appending an element to the end of the queue stays constant, and for this task the queue will not require any resizing of the list.
         """
+        #worst case complexities = O(1)
         self.queue.append((action, is_undo)) #add the action and whether it is an 'undo' action to our queue
         
 
@@ -40,19 +46,27 @@ class ReplayTracker:
             - If there were no more actions to play, and so nothing happened, return True.
             - Otherwise, return False.
         arguments-
-            grid- the grid is an input in order to check what layers were applied to the grid object created
+            grid- the grid is an input in order to check what layers were applied to the grid object created (Grid)
         returns- true if there is no action to do and false if the redo apply action is run
-        complexity- the big o of the functions is_empty and serve is o(1), therefore the best and worse case time complexity of this function is also o(1)
-        this is also because the function is constant in time regardless of the length of the queue so the time complexity stays constant.
+        worst complexity- the big o of the functions undo_apply and redo_apply is o(undo_apply or redo_apply), therefore the best and worse case time complexity of this function is also o(undo_apply or redo_apply)
+        best complexity = O(1) when the queue is empty.
         """
+        #worst case complexities = O(1)
         if self.queue.is_empty(): #check that there is action to do 
+            #worst case complexities = O(1)
             return True
+        #worst case complexities = O(1)
         full_Action = self.queue.serve() #serve the tuple
+        #worst case complexities = O(1)
         action = full_Action[0] # teh action is saved at index 0 of the tuple
+        #worst case complexities = O(1)
         is_undo = full_Action[1] #the is_undo is saved at the index 1
+        #worst case complexities = O(1)
         if is_undo: #if is_undo is true run the undo_apply of the action
+            #worst case complexities = O(undo_apply)
             action.undo_apply(grid)
         else:# if it is not undo, than run the redo_apply of the action.
+            #worst case complexities = O(undo_apply)
             action.redo_apply(grid)
         return False
 
@@ -75,4 +89,3 @@ if __name__ == "__main__":
     f3 = r.play_next_action(g) # action 2, undo
     t = r.play_next_action(g)  # True, nothing to do.
     assert (f1, f2, f3, t) == (False, False, False, True)
-
